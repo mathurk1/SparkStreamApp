@@ -21,7 +21,7 @@
 	"forwardPorts": [8080],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "/bin/bash /SparkStreamApp/start-spark.sh",
+	"postCreateCommand": "/bin/bash /SparkStreamApp/start-spark.sh &",
 
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
