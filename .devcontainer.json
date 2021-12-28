@@ -17,9 +17,14 @@
 		"python.testing.pytestEnabled": true
 	},
 
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [8080],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "/bin/bash /SparkStreamApp/start-spark.sh",
+
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
-		"ms-python.python",
-		"ms-vscode.cpptools"
+		"ms-python.python"
 	]
 }

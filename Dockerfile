@@ -50,12 +50,11 @@ touch $SPARK_WORKER_LOG && \
 ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
-# Setup app dev environment and codebase
+# Setup app dev environment and codebas
 RUN mkdir /SparkStreamApp
 WORKDIR /SparkStreamApp
 
-COPY . .
-
+COPY ./requirements.txt ./requirements.txt
 RUN pip3 install -r requirements.txt
 
-CMD ["/bin/bash", "start-spark.sh"]
+COPY ./start-spark.sh ./start-spark.sh
