@@ -1,9 +1,10 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json or the definition README at
 // https://github.com/microsoft/vscode-dev-containers/tree/master/containers/python-3-miniconda
 {
-	"name": "StreamApp",
-	"context": ".",
-	"dockerFile": "Dockerfile",
+	"name": "SparkStreamApp",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "spark",
+	"workspaceFolder": "/StreamingApp",
 
 	// Use 'settings' to set *default* container specific settings.json values on container create.
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
@@ -18,7 +19,7 @@
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8080, 9095],
+	"forwardPorts": [8080],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "/bin/bash /SparkStreamApp/start-spark.sh &",
