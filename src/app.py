@@ -1,16 +1,32 @@
 from pyspark.sql import SparkSession
-import pandas as pd
+from pyspark.sql.functions import *
 
-spark = SparkSession.builder.appName("SimpleApp").getOrCreate()
+spark = SparkSession \
+    .builder \
+    .appName("StreamingApp") \
+    .config("spark.streaming.stopGracefullyOnShutdown", "true") \
+    .config("spark.sql.shuffle.partitions", 3) \
+    .getOrCreate()
 
 
 def main():
-    columns = ["language","users_count"]
-    data = [("Java", "20000"), ("Python", "100000"), ("Scala", "3000")]
 
-    df = spark.createDataFrame(data).toDF(*columns)
+    lines_df = spark.readStream \
+    .format("socket") \
+    .option("host", "localhost") \
+    .option("port", "9095") \
+    .load()
 
-    print(df.take(5))
+    words_df = lines_df.select(expr("explode(split(value,' ')) as word"))
+    counts_df = words_df.groupBy("word").count()
+
+    word_count_query = counts_df.writeStream \
+        .format("console") \
+        .outputMode("complete") \
+        .option("checkpointLocation", "chk-point-dir") \
+        .start()
+
+    word_count_query.awaitTermination()
 
 
 if __name__ == "__main__":
