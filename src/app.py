@@ -6,27 +6,28 @@ spark = SparkSession \
     .appName("StreamingApp") \
     .config("spark.streaming.stopGracefullyOnShutdown", "true") \
     .config("spark.sql.shuffle.partitions", 3) \
+    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0") \
     .getOrCreate()
+
 
 
 def main():
 
-    lines_df = spark.readStream \
-    .format("socket") \
-    .option("host", "localhost") \
-    .option("port", "9095") \
+    kafka_df = spark.readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "broker:9092") \
+    .option("subscribe", "streamapp") \
+    .option("startingOffsets", "earliest") \
     .load()
 
-    words_df = lines_df.select(expr("explode(split(value,' ')) as word"))
-    counts_df = words_df.groupBy("word").count()
+    print_df = kafka_df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)") \
+    .writeStream \
+    .format("console") \
+    .outputMode("update") \
+    .option("checkpointLocation", "chk-point-dir") \
+    .start()
 
-    word_count_query = counts_df.writeStream \
-        .format("console") \
-        .outputMode("complete") \
-        .option("checkpointLocation", "chk-point-dir") \
-        .start()
-
-    word_count_query.awaitTermination()
+    print_df.awaitTermination()
 
 
 if __name__ == "__main__":
