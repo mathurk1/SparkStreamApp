@@ -3,3 +3,4 @@
 .DS_Store
 .mypy_cache
 chk-point-dir
+__pycache__/
