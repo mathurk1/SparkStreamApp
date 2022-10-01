@@ -3,6 +3,7 @@ sqlalchemy==1.4.37
 pyodbc==4.0.32
 psycopg2-binary==2.9.3
 pyspark==3.3.0
+kafka-python==2.0.2
 black
 mypy
 flake8
